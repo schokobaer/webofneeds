@@ -22,23 +22,30 @@ class Controller {
         window.msgs4dbg = this;
 
         const selectFromState = (state)=>{
-            const postId = decodeURIComponent(state.getIn(['router', 'currentParams', 'myUri']));
-            const connectionsDeprecated = selectAllByConnections(state).toJS(); //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
-            const conversations = Object.keys(connectionsDeprecated)
-                    .map(key => connectionsDeprecated[key])
-                    .filter(conn =>
-                        conn.connection.hasConnectionState === won.WON.Connected &&
-                        conn.ownNeed.uri === postId
-                    );
-            const conversationUris = conversations.map(conn => conn.connection.uri)
 
-            const post = state.getIn(['needs','ownNeeds', postId]);
+            const myNeedUri = decodeURIComponent(state.getIn(
+                ['router', 'currentParams', 'myUri']));
+
+            const connectionUrisOfNeed = state.getIn(
+                ['needs', 'ownNeeds', myNeedUri, 'hasConnections']);
+
+            const conversations = connectionUrisOfNeed
+                .map(connectionUri =>
+                    state.getIn(['connections', connectionUri]))
+                .filter(conn =>
+                    conn.get('hasConnectionState') === won.WON.Connected
+                );
+
+            const conversationUris = conversations.map(c => c.get('uri'));
+
+            const post = state.getIn(['needs','ownNeeds', myNeedUri]);
 
             return {
+                connectionType: won.WON.Connected,
                 post: post && post.toJS? post.toJS() : {},
-                allByConnections: connectionsDeprecated,
-                conversations: conversations,
-                conversationUris: conversationUris,
+                allByConnections: selectAllByConnections(state).toJS(), //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                conversations: conversations.toList().toJS(),//TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                conversationUris: conversationUris.toJS(), //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
                 routerParams: state.getIn(['router', 'currentParams']),
             };
         }

@@ -15,7 +15,7 @@ const serviceDependencies = ['$ngRedux', '$scope'];
 function genComponentConf() {
     let template = `
         <div class="connectionSelectionItemLine"
-                ng-repeat="(key,connectionUri) in self.connectionUris">
+                ng-repeat="(key,connectionUri) in self.relevantConnectionUris">
             <div class="conn">
                  <div
                  class="conn__item clickable"
@@ -75,14 +75,39 @@ function genComponentConf() {
             window.connSel4db = this;
             attach(this, serviceDependencies, arguments);
             this.labels = labels;
+            this.openUri = '';
 
             const selectFromState = (state)=>{
-                const postId = decodeURIComponent(state.getIn(['router', 'currentParams', 'myUri']));
+                const myNeedUri = decodeURIComponent(state.getIn(
+                    ['router', 'currentParams', 'myUri']));
+
+                const myNeed = state.getIn(['needs','ownNeeds', myNeedUri]);
                 const allByConnections = selectAllByConnections(state);
 
-                return {
-                    post: state.getIn(['needs','ownNeeds', postId]).toJS(),
-                    allByConnections: allByConnections,
+                if(this.connectionType) {
+                    const connectionUrisOfNeed = state.getIn(
+                        ['needs', 'ownNeeds', myNeedUri, 'hasConnections']);
+
+                    const relevantConnections = connectionUrisOfNeed
+                        .map(connectionUri =>
+                            state.getIn(['connections', connectionUri]))
+                        .filter(conn =>
+                            conn.get('hasConnectionState') === this.connectionType
+                        );
+
+                    const relevantConnectionUris = relevantConnections.map(c => c.get('uri'));
+
+                    return {
+                        post: myNeed.toJS(),  //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                        allByConnections,
+                        relevantConnectionUris: relevantConnectionUris.toJS(), //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                    }
+                } else {
+                    return {
+                        post: myNeed.toJS(),  //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                        allByConnections,
+                        relevantConnectionUris: this.connectionUris? this.connectionUris : [],
+                    }
                 };
             }
 
@@ -93,6 +118,7 @@ function genComponentConf() {
             this.openUri = connectionUri;
             this.selectedConnection({connectionUri}); //trigger callback with scope-object
         }
+        /*
         getOpen() {
             return this.allByConnections.get(this.openUri);
         }
@@ -103,6 +129,7 @@ function genComponentConf() {
             this.selectedConnectionUri = item.connection.uri;
             this.selectedConnection(item.connection.uri);
         }
+        */
     }
     Controller.$inject = serviceDependencies;
     return {
@@ -111,6 +138,12 @@ function genComponentConf() {
         controllerAs: 'self',
         bindToController: true, //scope-bindings -> ctrl
         scope: {
+            connectionType: "=",
+            /**
+             * @deprecated caused some issues for me. Actually in all cases
+             * we only need the connection-type and can get the rest from the
+             * routing parameters.
+             */
             connectionUris: "=",
             /*
              * Usage:

@@ -17,10 +17,10 @@ function genComponentConf() {
                     <a ui-sref="overviewPosts">
                         <img src="generated/icon-sprite.svg#ico36_backarrow" class="ntb__icon">
                     </a>
-                    <won-square-image src="self.item.titleImgSrc" title="self.item.title"></won-square-image>
+                    <won-square-image src="self.myNeed.get('titleImgSrc')" title="self.myNeed.get('title')"></won-square-image>
                     <div class="ntb__inner__left__titles">
-                        <h1 class="ntb__title">{{self.item.title}}</h1>
-                        <div class="ntb__inner__left__titles__type">{{self.labels.type[self.item.basicNeedType]}}</div>
+                        <h1 class="ntb__title">{{self.myNeed.get('title')}}</h1>
+                        <div class="ntb__inner__left__titles__type">{{self.labels.type[self.myNeed.get('basicNeedType')]}}</div>
                     </div>
                 </div>
                 <div class="ntb__inner__right">
@@ -29,33 +29,33 @@ function genComponentConf() {
                     <button class="won-button--filled thin red" ng-show="!self.isActive && self.settingsOpen" ng-mouseleave="self.settingsOpen=false" ng-click="self.reOpenPost()">Reopen Post</button>
                     <ul class="ntb__tabs">
                         <li ng-class="{'ntb__tabs__selected' : self.selection == 4}">
-                            <a ui-sref="postInfo({myUri: self.item.uri})">
+                            <a ui-sref="postInfo({myUri: self.myNeedUri})">
                                 Post Info
                             </a>
                         </li>
                         <li ng-class="{'ntb__tabs__selected' : self.selection == 0}">
-                            <a ui-sref="postConversations({myUri: self.item.uri})"
+                            <a ui-sref="postConversations({myUri: self.myNeedUri})"
                                 ng-class="{'disabled' : !self.hasMessages}">
                                 Messages
                                 <span class="ntb__tabs__unread">{{ self.unreadMessages }}</span>
                             </a>
                         </li>
                         <li ng-class="{'ntb__tabs__selected' : self.selection == 1}">
-                            <a ui-sref="overviewMatches({myUri: self.item.uri})"
+                            <a ui-sref="overviewMatches({myUri: self.myNeedUri})"
                                 ng-class="{'disabled' : !self.hasMatches}">
                                 Matches
                                 <span class="ntb__tabs__unread">{{ self.unreadMatches }}</span>
                             </a>
                         </li>
                         <li ng-class="{'ntb__tabs__selected' : self.selection == 2}">
-                            <a ui-sref="overviewIncomingRequests({myUri: self.item.uri})"
+                            <a ui-sref="overviewIncomingRequests({myUri: self.myNeedUri})"
                                 ng-class="{'disabled' : !self.hasIncomingRequests}">
                                 Requests
                                 <span class="ntb__tabs__unread">{{ self.unreadIncomingRequests }}</span>
                             </a>
                         </li>
                         <li ng-class="{'ntb__tabs__selected' : self.selection == 3}">
-                            <a ui-sref="overviewSentRequests({myUri: self.item.uri})"
+                            <a ui-sref="overviewSentRequests({myUri: self.myNeedUri})"
                                 ng-class="{'disabled' : !self.hasSentRequests}">
                                 Sent Requests
                                 <span class="ntb__tabs__unread">{{ self.unreadSentRequests }}</span>
@@ -78,11 +78,14 @@ function genComponentConf() {
 
             const selectFromState = (state)=>{
                 const unreadCounts = selectUnreadEventsByNeedAndType(state);
-                const myUri = decodeURIComponent(state.getIn(['router', 'currentParams', 'myUri']));
-                const connectionUrisOfNeed = state.getIn(['needs', 'ownNeeds', myUri, 'hasConnections'])
+                const myNeedUri = decodeURIComponent(state.getIn(['router', 'currentParams', 'myUri']));
+                const myNeed = state.getIn(['needs', 'ownNeeds', myNeedUri]);
+                const connectionUrisOfNeed = myNeed.get('hasConnections');
                 const connectionsOfNeed = connectionUrisOfNeed.map(connectionUri => state.getIn(['connections', connectionUri]));
 
                 return {
+                    myNeedUri: myNeedUri,
+                    myNeed: myNeed,
                     hasIncomingRequests: connectionsOfNeed.filter(conn =>
                         conn.get('hasConnectionState') === won.WON.RequestReceived
                     ).size > 0,
@@ -99,20 +102,11 @@ function genComponentConf() {
                         conn.get('hasConnectionState') === won.WON.Connected
                     ).size > 0,
 
-                    /*
-                    hasIncomingRequests: Object.keys(connectionsDeprecated) //TODO immutable maps have a `.filter(...)` https://facebook.github.io/immutable-js/docs/
-                        .map(key => connectionsDeprecated[key])
-                        .filter(conn=>{
-                            if(conn.connection.hasConnectionState===won.WON.RequestReceived && conn.ownNeed.uri === this.item.uri){
-                                return true
-                            }
-                        }).length > 0,
-                    */
-                    unreadMessages: unreadCounts.getIn([this.item.uri, won.WON.Connected]), //TODO: NOT REALLY THE MESSAGE COUNT ONLY THE CONVERSATION COUNT
-                    unreadIncomingRequests: unreadCounts.getIn([this.item.uri, won.WON.RequestReceived]),
-                    unreadSentRequests: unreadCounts.getIn([this.item.uri, won.WON.RequestSent]),
-                    unreadMatches: unreadCounts.getIn([this.item.uri, won.WON.Suggested]),
-                    isActive: state.getIn(['needs','ownNeeds', this.item.uri, 'state']) === won.WON.Active
+                    unreadMessages: unreadCounts.getIn([myNeedUri, won.WON.Connected]), //TODO: NOT REALLY THE MESSAGE COUNT ONLY THE CONVERSATION COUNT
+                    unreadIncomingRequests: unreadCounts.getIn([myNeedUri, won.WON.RequestReceived]),
+                    unreadSentRequests: unreadCounts.getIn([myNeedUri, won.WON.RequestSent]),
+                    unreadMatches: unreadCounts.getIn([myNeedUri, won.WON.Suggested]),
+                    isActive: state.getIn(['needs','ownNeeds', myNeedUri, 'state']) === won.WON.Active
                 };
             };
 
@@ -121,13 +115,13 @@ function genComponentConf() {
         }
 
         closePost() {
-            console.log("CLOSING THE POST: "+this.item.uri);
-            this.needs__close(this.item.uri);
+            console.log("CLOSING THE POST: " + this.myNeedUri);
+            this.needs__close(this.myNeedUri);
         }
 
         reOpenPost() {
-            console.log("RE-OPENING THE POST: "+this.item.uri);
-            this.needs__reopen(this.item.uri);
+            console.log("RE-OPENING THE POST: " + this.myNeedUri);
+            this.needs__reopen(this.myNeedUri);
         }
     }
     Controller.$inject = serviceDependencies;
