@@ -78,14 +78,26 @@ function genComponentConf() {
 
             const selectFromState = (state)=>{
                 const unreadCounts = selectUnreadEventsByNeedAndType(state);
-                const connectionsDeprecated = selectAllByConnections(state).toJS(); //TODO plz don't do `.toJS()`. every time an ng-binding somewhere cries.
+                const myUri = decodeURIComponent(state.getIn(['router', 'currentParams', 'myUri']));
+                const connectionUrisOfNeed = state.getIn(['needs', 'ownNeeds', myUri, 'hasConnections'])
+                const connectionsOfNeed = connectionUrisOfNeed.map(connectionUri => state.getIn(['connections', connectionUri]));
 
                 return {
-                    hasIncomingRequests: state.getIn(['connections'])
-                        .filter(conn =>
-                            conn.get('hasConnectionState') === won.WON.RequestReceived
-                            && conn.get('belongsToNeed') === this.item.uri
-                        ).size > 0,
+                    hasIncomingRequests: connectionsOfNeed.filter(conn =>
+                        conn.get('hasConnectionState') === won.WON.RequestReceived
+                    ).size > 0,
+
+                    hasSentRequests: connectionsOfNeed.filter(conn =>
+                        conn.get('hasConnectionState') === won.WON.RequestSent
+                    ).size > 0,
+
+                    hasMatches: connectionsOfNeed.filter(conn =>
+                        conn.get('hasConnectionState') === won.WON.Suggested
+                    ).size > 0,
+
+                    hasMessages: connectionsOfNeed.filter(conn =>
+                        conn.get('hasConnectionState') === won.WON.Connected
+                    ).size > 0,
 
                     /*
                     hasIncomingRequests: Object.keys(connectionsDeprecated) //TODO immutable maps have a `.filter(...)` https://facebook.github.io/immutable-js/docs/
@@ -96,25 +108,6 @@ function genComponentConf() {
                             }
                         }).length > 0,
                     */
-                    hasSentRequests: Object.keys(connectionsDeprecated) //TODO immutable maps have a `.filter(...)` https://facebook.github.io/immutable-js/docs/
-                        .map(key => connectionsDeprecated[key])
-                        .filter(conn=>{
-                            if(conn.connection.hasConnectionState===won.WON.RequestSent && conn.ownNeed.uri === this.item.uri){
-                                return true
-                            }
-                        }).length > 0,
-                    hasMatches: Object.keys(connectionsDeprecated) //TODO immutable maps have a `.filter(...)` https://facebook.github.io/immutable-js/docs/
-                        .map(key => connectionsDeprecated[key])
-                        .filter(conn=>{
-                            if(conn.connection.hasConnectionState===won.WON.Suggested && conn.ownNeed.uri === this.item.uri){
-                                return true
-                            }
-                        }).length > 0,
-                    hasMessages: Object.keys(connectionsDeprecated) //TODO immutable maps have a `.filter(...)` https://facebook.github.io/immutable-js/docs/
-                        .map(key => connectionsDeprecated[key])
-                        .filter(conn=>{
-                            return conn.connection.hasConnectionState===won.WON.Connected && conn.ownNeed.uri === this.item.uri
-                        }).length > 0,
                     unreadMessages: unreadCounts.getIn([this.item.uri, won.WON.Connected]), //TODO: NOT REALLY THE MESSAGE COUNT ONLY THE CONVERSATION COUNT
                     unreadIncomingRequests: unreadCounts.getIn([this.item.uri, won.WON.RequestReceived]),
                     unreadSentRequests: unreadCounts.getIn([this.item.uri, won.WON.RequestSent]),
