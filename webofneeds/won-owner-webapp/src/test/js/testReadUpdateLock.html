@@ -23,15 +23,24 @@
 </head>
 <body>
    Hi there!
+
    <script src="../../main/webapp/scripts/jquery.10.2.js"></script>
    <script src="../../main/webapp/scripts/jquery.fs.scroller.min.js"></script>
 
    <script src="../../main/webapp/jspm_packages/system.js"></script>
    <script src="../../main/webapp/jspm_config.js"></script>
 
-   <script src="../../main/webapp/service/linkeddata-service-won.js">
-
+   <script src="../../main/webapp/generated/app_jspm.bundle.js"></script>
+   <script src="../../main/webapp/service/linkeddata-service-won.js"></script>
+   <script>
+       System.import('./app/won-es6').then(wonModule => importedWon = wonModule.default)
+       .catch(console.error.bind(console));
    </script>
+   <script language="JavaScript">
+
+       var rul = new won.ReadUpdateLock();
+   </script>
+
 </body>
 
 </html>
