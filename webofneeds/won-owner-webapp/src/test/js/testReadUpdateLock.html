@@ -33,7 +33,11 @@
    <script src="../../main/webapp/generated/app_jspm.bundle.js"></script>
    <script src="../../main/webapp/service/linkeddata-service-won.js"></script>
    <script>
-       System.import('./app/won-es6').then(wonModule => importedWon = wonModule.default)
+       System.import('./app/won-es6')
+       .then(wonModule => {
+           var importedWon = wonModule.default;
+           console.log(importedWon);
+       })
        .catch(console.error.bind(console));
    </script>
    <script language="JavaScript">
