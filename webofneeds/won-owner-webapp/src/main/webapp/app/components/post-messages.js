@@ -57,7 +57,7 @@ function genComponentConf() {
                 alt="Loading&hellip;"
                 ng-show="self.connection.get('loadingEvents')"
                 class="hspinner"/>
-                <a ng-show="self.eventsLoaded && !self.connection.get('loadingEvents')"
+                <a ng-show="self.someEventsLoaded && !self.connection.get('loadingEvents')"
                     ng-click="self.connections__showMoreMessages(self.connectionUri, 5)"
                     href="">
                         show more
@@ -134,7 +134,7 @@ function genComponentConf() {
                 const connectionUri = selectOpenConnectionUri(state);
                 const connection = selectOpenConnection(state);
                 const eventUris = connection && connection.get('hasEvents');
-                const eventsLoaded = eventUris && eventUris.size > 0;
+                const someEventsLoaded = eventUris && eventUris.size > 0;
 
                 //TODO seems like rather bad practice to have sideffects here
                 delay(0).then(() => {
@@ -142,7 +142,7 @@ function genComponentConf() {
                     self.updateScrollposition();
 
                     // amake sure latest messages are loaded
-                    if (connection && !connection.get('loadingEvents') && !eventsLoaded) {
+                    if (connection && !connection.get('loadingEvents') && !someEventsLoaded) {
                         self.connections__showLatestMessages(connectionUri, 4);
                     }
                 });
@@ -157,7 +157,7 @@ function genComponentConf() {
                     connectionData,
                     connectionUri,
                     connection,
-                    eventsLoaded,
+                    someEventsLoaded,
                     lastUpdateTime: state.get('lastUpdateTime'),
                     chatMessages: chatMessages && chatMessages.toArray(), //toArray needed as ng-repeat won't work otherwise :|
                     state4dbg: state,
