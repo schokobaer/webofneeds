@@ -76,3 +76,6 @@ export function combineReducersStable(mapOfReducers) {
     }
 }
 
+export function deletemeeee () {
+    console.log('BAAAAAARRRRR');
+}
