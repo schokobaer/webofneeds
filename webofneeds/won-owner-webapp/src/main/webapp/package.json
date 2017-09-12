@@ -27,20 +27,21 @@
     "rimraf": "2.4.4"
   },
   "jspm": {
+    "main": "app_jspm.js",
+    "configFiles": {
+      "jspm": "jspm_config.js"
+    },
     "configFile": "jspm_config.js",
     "dependencies": {
-      "angular": "npm:angular@1.6.6",
       "angular-inview": "npm:angular-inview@2.1.0",
       "angular-route": "npm:angular-route@1.6.6",
       "angular-sanitize": "npm:angular-sanitize@1.6.6",
       "angular-ui-router": "npm:angular-ui-router@1.0.3",
       "fetch": "github:github/fetch@0.10.1",
-      "immutable": "npm:immutable@3.7.5",
       "jsonld": "npm:jsonld@0.4.12",
       "leaflet": "npm:leaflet@0.7.7",
       "ng-redux": "npm:ng-redux@x3.4.1",
       "reduce-reducers": "npm:reduce-reducers@0.1.1",
-      "redux": "npm:redux@3.7.2",
       "redux-immutablejs": "npm:redux-immutablejs@0.0.8",
       "redux-thunk": "npm:redux-thunk@1.0.0",
       "redux-ui-router": "npm:redux-ui-router@0.7.2",
@@ -48,9 +49,97 @@
       "sockjs": "bower:sockjs@0.3.4"
     },
     "devDependencies": {
-      "babel": "npm:babel-core@5.8.35",
       "babel-runtime": "npm:babel-runtime@5.8.35",
-      "core-js": "npm:core-js@1.2.6"
+      "core-js": "npm:core-js@1.2.6",
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.25"
+    },
+    "peerDependencies": {
+      "@uirouter/angularjs": "npm:@uirouter/angularjs@^1.0.3",
+      "angular": "npm:angular@1.6.6",
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
+      "bcrypt-pbkdf": "npm:bcrypt-pbkdf@^1.0.0",
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "dgram": "npm:jspm-nodelibs-dgram@^0.2.0",
+      "dns": "npm:jspm-nodelibs-dns@^0.2.0",
+      "ecc-jsbn": "npm:ecc-jsbn@~0.1.1",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "http": "npm:jspm-nodelibs-http@^0.2.0",
+      "https": "npm:jspm-nodelibs-https@^0.2.0",
+      "immutable": "npm:immutable@3.7.5",
+      "jsbn": "npm:jsbn@0.1",
+      "net": "npm:jspm-nodelibs-net@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
+      "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "querystring": "npm:jspm-nodelibs-querystring@^0.2.0",
+      "redux": "npm:redux@3.7.2",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "tls": "npm:jspm-nodelibs-tls@^0.2.0",
+      "tty": "npm:jspm-nodelibs-tty@^0.2.0",
+      "tweetnacl": "npm:tweetnacl@0.14",
+      "url": "npm:jspm-nodelibs-url@^0.2.0",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
+      "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
+    },
+    "overrides": {
+      "npm:angular@1.6.6": {
+        "format": "global",
+        "jspmNodeConversion": false,
+        "main": "angular",
+        "meta": {
+          "angular.js": {
+            "exports": "angular",
+            "format": "global"
+          }
+        }
+      },
+      "npm:babel-runtime@5.8.35": {
+        "main": false,
+        "dependencies": {},
+        "optionalDependencies": {
+          "core-js": "^1.2.0"
+        }
+      },
+      "npm:browserify-zlib@0.1.4": {
+        "dependencies": {
+          "readable-stream": "^2.0.2",
+          "pako": "~0.2.0"
+        },
+        "map": {
+          "_stream_transform": "readable-stream/transform"
+        }
+      },
+      "npm:inherits@2.0.1": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:inherits@2.0.3": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:leaflet@0.7.7": {
+        "jspmNodeConversion": false
+      },
+      "npm:lodash@4.17.4": {
+        "map": {
+          "buffer": "@empty",
+          "process": "@empty"
+        }
+      },
+      "npm:pbkdf2@3.0.14": {
+        "main": "browser.js"
+      },
+      "npm:safe-buffer@5.1.1": {
+        "browser": "index.js"
+      }
     }
   }
 }
