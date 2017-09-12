@@ -8,8 +8,7 @@ System.config({
   },
   paths: {
     "github:*": "jspm_packages/github/*",
-    "npm:*": "jspm_packages/npm/*",
-    "bower:*": "jspm_packages/bower/*"
+    "npm:*": "jspm_packages/npm/*"
   },
 
   meta: {
@@ -41,7 +40,7 @@ System.config({
     "redux-thunk": "npm:redux-thunk@1.0.0",
     "redux-ui-router": "npm:redux-ui-router@0.7.2",
     "reselect": "npm:reselect@2.0.2",
-    "sockjs": "bower:sockjs@0.3.4",
+    "sockjs": "npm:sockjs@0.3.4",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },
