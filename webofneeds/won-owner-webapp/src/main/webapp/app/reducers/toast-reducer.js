@@ -78,10 +78,20 @@ export default function(allToasts = initialState, action = {}) {
         //WARN TOASTS: won.WON.warnToast
         //ERROR TOASTS: won.WON.errorToast
         case actionTypes.messages.closeNeed.failed:
-            return pushNewToast(allToasts, "Closing Need failed", won.WON.errorToast);
+            return pushNewToast(allToasts, "Failed to close posting", won.WON.errorToast);
 
         case actionTypes.messages.chatMessage.failure:
-            return pushNewToast(allToasts, "Sending Chat Message failed", won.WON.errorToast);
+            return pushNewToast(allToasts, "Failed to send chat message", won.WON.errorToast);
+
+        case actionTypes.messages.needMessageReceived:
+            var title = action.payload.needTitle;
+            var message = action.payload.message;
+            return pushNewToast(allToasts, "Notification for your posting '" + title + "': "+ message, won.WON.infoToast);
+
+        case actionTypes.needs.closedBySystem:
+            title = action.payload.needTitle;
+            message = action.payload.message;
+            return pushNewToast(allToasts, "Closed your posting '" + title + "'. Cause: "+ message, won.WON.infoToast);
 
         //SPECIFIC TOAST ACTIONS
         case actionTypes.toasts.delete:
