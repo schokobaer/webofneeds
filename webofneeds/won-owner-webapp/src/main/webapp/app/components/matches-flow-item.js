@@ -24,7 +24,7 @@ import {
 const serviceDependencies = ['$ngRedux', '$scope', '$interval'];
 function genComponentConf() {
     let template = `
-        <div ng-show="self.images" class="mfi__gallery clickable" ng-click="self.toggleFeedback()">
+        <div ng-show="self.images" class="mfi__gallery clickable">
             <won-extended-gallery
                 max-thumbnails="self.maxThumbnails"
                 items="self.images"
@@ -42,8 +42,7 @@ function genComponentConf() {
             </won-need-map>
         </div>
 
-        <div class="mfi__description clickable"
-              ng-click="self.toggleFeedback()">
+        <div class="mfi__description clickable">
             <won-post-header
               need-uri="self.remoteNeed.get('uri')"
               hide-image="true">
@@ -54,11 +53,7 @@ function genComponentConf() {
             </won-post-content>
         </div>
 
-        <div
-            class="mfi__match clickable"
-            ng-if="!self.feedbackVisible"
-            ng-click="self.showFeedback()"
-            ng-mouseenter="self.showFeedback()">
+        <div class="mfi__match clickable">
                 <div class="mfi__match__description">
                     <div class="mfi__match__description__title">
                         {{ self.ownNeed.get('title') }}
@@ -73,17 +68,13 @@ function genComponentConf() {
                     uri="self.ownNeed.get('uri')">
                 </won-square-image>
         </div>
-        <won-feedback-grid
-            connection-uri="self.connectionUri"
-            ng-if="self.feedbackVisible"
-            ng-mouseleave="self.hideFeedback()"/>
+        <won-feedback-grid connection-uri="self.connectionUri"/>
     `;
 
     class Controller {
         constructor() {
             attach(this, serviceDependencies, arguments);
             this.labels = labels;
-            this.feedbackVisible = false;
             this.maxThumbnails = 4;
             this.images=[];
             const self = this;
@@ -99,18 +90,6 @@ function genComponentConf() {
             };
 
             connect2Redux(selectFromState, actionCreators, ['self.connectionUri'], this);
-        }
-
-        showFeedback() {
-            this.feedbackVisible = true;
-        }
-
-        hideFeedback() {
-            this.feedbackVisible = false;
-        }
-
-        toggleFeedback(){
-            this.feedbackVisible = !this.feedbackVisible;
         }
     }
     Controller.$inject = serviceDependencies;
