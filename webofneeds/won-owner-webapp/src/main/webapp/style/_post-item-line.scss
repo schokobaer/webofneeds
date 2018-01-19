@@ -41,14 +41,14 @@ won-post-item-line {
         }
 
         &__creationdate {
-          color: $won-subtitle-gray;
+          color: hsl($won-subtitle-gray);
           font-size: $smallFontSize;
           white-space: nowrap;
         }
       }
 
       &__subtitle {
-        color: $won-subtitle-gray;
+        color: hsl($won-subtitle-gray);
         font-size: $smallFontSize;
         display: flex;
         flex-direction: row;

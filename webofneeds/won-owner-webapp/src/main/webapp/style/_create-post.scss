@@ -31,7 +31,7 @@ won-create-post {
 
   hr {
     border: 0;
-    /*border-top: $thinBorderWidth solid $won-line-gray;*/
+    /*border-top: $thinBorderWidth solid hsl($won-line-gray);*/
     width: 100%;
   }
 
@@ -87,14 +87,14 @@ won-create-post {
   }
   
   .cp__textfield_instruction {
-    color: $won-line-gray;
+    color: hsl($won-line-gray);
 	@include appearAnimation(0.5s, linear);
   }
 
   .cp__details {
     @include slideWithOpacityAnimation(1.0s, linear, 60rem, 0.5rem, 0.75rem);
 
-    border-top: $thinBorderWidth solid $won-line-gray;
+    border-top: $thinBorderWidth solid hsl($won-line-gray);
     margin: 0.75rem 0;
     padding: 0.5rem 0;
 
@@ -111,7 +111,7 @@ won-create-post {
 
         .cp__taglist__tag {
           border-radius: 0.5rem;
-          background: $won-dark-purple;
+          background: hsl($won-dark-purple);
           color: white;
           margin: 0.25rem 0.25rem 0.25rem 0;
           padding: 0.25rem 0.5rem;
@@ -136,7 +136,7 @@ won-create-post {
         min-width: 0; // so a size is specified and break-word works
         word-wrap: break-word;
 
-        border-color: $won-line-gray;
+        border-color: hsl($won-line-gray);
 
         width: 100%;
       }
@@ -144,7 +144,7 @@ won-create-post {
   }
 
   .cp__addDetail {
-    border-top: $thinBorderWidth solid $won-line-gray;
+    border-top: $thinBorderWidth solid hsl($won-line-gray);
     margin: .75rem 0;
     padding: .5rem 0;
     @include appearAnimation(0.5s, linear);
@@ -161,7 +161,7 @@ won-create-post {
         cursor: pointer;
 
         &:hover {
-          color: $won-red;
+          color: hsl($won-primary-color);
           background-image: url('icon-sprite.svg#ico36_close_circle');
         }
 
@@ -202,11 +202,11 @@ won-create-post {
         }
         &.picked {
           background-image: url('icon-sprite.svg#ico36_added_circle_grey');
-          color: $won-line-gray;
+          color: hsl($won-line-gray);
           cursor: default;
 
           &:hover {
-            color: $won-line-gray;
+            color: hsl($won-line-gray);
             cursor: default;
           }
         }
@@ -254,7 +254,7 @@ won-create-post {
     }
 
     &.addDetail {
-      color: $won-red;
+      color: hsl($won-primary-color);
       background-image: url('icon-sprite.svg#ico36_plus_circle');
 
       &:hover {
@@ -309,7 +309,7 @@ won-image-dropzone {
   .wid__dropzone--empty {
     @extend %wid__dropzone;
 
-    border: $boldBorderWidth dashed $won-line-gray;
+    border: $boldBorderWidth dashed hsl($won-line-gray);
     border-radius: $boldBorderWidth;
 
     background-color: white;
@@ -322,7 +322,7 @@ won-image-dropzone {
   .wid__dropzone--filled {
     @extend %wid__dropzone;
 
-    border: $thinBorderWidth solid $won-line-gray;
+    border: $thinBorderWidth solid hsl($won-line-gray);
 
     .wid__dropzone__default-bg {
       display: none;

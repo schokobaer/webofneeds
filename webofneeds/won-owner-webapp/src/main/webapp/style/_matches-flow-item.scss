@@ -9,7 +9,7 @@ won-matches-flow-item {
   break-inside: avoid;
   margin: 0.5rem 0.25rem;
   border: $thinGrayBorder;
-  background: $won-light-gray;
+  background: hsl($won-light-gray);
   width: 16.25rem;
 
   @media (max-width: $responsivenessBreakPoint){
@@ -26,7 +26,7 @@ won-matches-flow-item {
       font-size: $smallFontSize;
     }
 
-    @include speech-bubble-bottom($won-light-gray, $won-line-gray, 0.625rem, $thinBorderWidth, 50%);
+    @include speech-bubble-bottom(hsl($won-light-gray), hsl($won-line-gray), 0.625rem, $thinBorderWidth, 50%);
   }
 
   .mfi__gallery {
@@ -85,7 +85,7 @@ won-matches-flow-item {
 
     &:hover {
       .mfi__match__description__title {
-        color: $won-red;
+        color: hsl($won-primary-color);
       }
     }
 

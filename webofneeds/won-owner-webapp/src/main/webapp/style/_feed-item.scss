@@ -9,7 +9,7 @@ won-feed-item {
   margin-bottom: 1rem;
 
   .fi {
-    background: $won-light-gray;
+    background: hsl($won-light-gray);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -38,13 +38,13 @@ won-feed-item {
         }
 
         &__date {
-          color: $won-subtitle-gray;
+          color: hsl($won-subtitle-gray);
           font-size: $smallFontSize;
         }
       }
 
       &__subtitle {
-        color: $won-subtitle-gray;
+        color: hsl($won-subtitle-gray);
         display: flex;
         flex-direction: row;
         font-size: $smallFontSize;
@@ -95,7 +95,7 @@ won-feed-item {
             font-weight: 700;
           }
           &__date {
-            color: $won-subtitle-gray;
+            color: hsl($won-subtitle-gray);
             font-size: $smallFontSize;
           }
         }
@@ -108,11 +108,11 @@ won-feed-item {
 
     &__more {
       font-size: $smallFontSize;
-      color: $won-red;
+      color: hsl($won-primary-color);
       margin: 0.5rem 0.5rem 0.5rem (1.5rem + $postIconSize);
     }
 
-    @include speech-bubble-top(white, $won-line-gray, 0.625rem, $thinBorderWidth, 5rem);
+    @include speech-bubble-top(white, hsl($won-line-gray), 0.625rem, $thinBorderWidth, 5rem);
   }
 
   .fi__footer {
@@ -143,7 +143,7 @@ won-feed-item {
         &__caption {
           padding-left: 1.25rem;
           padding-right: 1.25rem; //TODO: CAPTION PADDING COULD LEAD TO PROBLEMS WHEN RESIZING WINDOW
-          color: $won-red;
+          color: hsl($won-primary-color);
         }
       }
     }

@@ -7,7 +7,7 @@ $minHeight: $iconSize + $verticalPadding * 2;
 %typeselect {
   cursor: default;
   list-style: none;
-  border: $thinBorderWidth solid $won-line-gray;
+  border: $thinBorderWidth solid hsl($won-line-gray);
   background-color: white;
   min-height: $formInputHeight;
   box-sizing: border-box;
@@ -29,8 +29,8 @@ $minHeight: $iconSize + $verticalPadding * 2;
 
     @include flex-row-spaced;
 
-    &:hover, &:focus { background-color: $won-light-gray; }
-    &:active { background-color: darken($won-light-gray, 10%) }
+    &:hover, &:focus { background-color: hsl($won-light-gray); }
+    &:active { background-color: darken(hsl($won-light-gray), 10%) }
 
     .ts__option__carret {
       @include carretSized;
@@ -39,12 +39,12 @@ $minHeight: $iconSize + $verticalPadding * 2;
     .ts__option__help {
       //display: none;
 
-      background-color: $won-helpbox-yellow;
+      background-color: hsl($won-helpbox-yellow);
 
       @extend %vcenter--absolute;
       left: 100%;
 
-      border: $thinBorderWidth solid $won-line-gray;
+      border: $thinBorderWidth solid hsl($won-line-gray);
 
       width: 20rem;
       padding: 1rem;

@@ -27,11 +27,11 @@ chat-textfield {
     align-self: stretch;
 
     &.valid { .Medium {
-        border-color: $won-line-gray;
+        border-color: hsl($won-line-gray);
     }}
 
     &.invalid { .Medium {
-        border-color: $won-red;
+        border-color: hsl($won-primary-color);
     }}
 
     .Medium {
@@ -58,7 +58,7 @@ chat-textfield {
 
 
       &.wdt__text--placeholder {
-        color: $won-line-gray;
+        color: hsl($won-line-gray);
       }
 
       &:focus {
@@ -69,7 +69,7 @@ chat-textfield {
       //display: none; //hide input field while placeholder is visible
     }
     & .Medium-placeholder {
-      color: $won-line-gray;
+      color: hsl($won-line-gray);
       position: absolute;
       pointer-events: none; //click-through
     }

@@ -4,16 +4,29 @@ $responsivenessBreakPoint: 31rem;
 
 // colors
 
-$won-red: #F04646;
-$won-light-gray: #F0F2F4; //used for headings
-$won-lighter-gray: #F8F9F9; //used for background
-$won-line-gray: #CBD2D1; //use for lines
-$won-subtitle-gray: #808080;
-$won-helpbox-yellow: #FFFCE5;
-$won-dark-blue: #00325A;
-$won-dark-purple: #673A68;
-$won-lighter-blue: #468CDC;
-$won-dark-gray: #303A43;
+$won-primary-color: var(--won-primary-color);
+$won-secondary-color: var(--won-secondary-color);
+$won-secondary-color-lighter: var(--won-secondary-color-lighter);
+$won-light-gray: var(--won-light-gray); //used for headings
+$won-lighter-gray: var(--won-lighter-gray); //used for background
+$won-line-gray: var(--won-line-gray); //use for lines
+$won-subtitle-gray: var(--won-subtitle-gray);
+$won-helpbox-yellow: var(--won-helpbox-yellow);
+$won-dark-purple: var(--won-dark-purple);
+$won-dark-gray: var(--won-dark-gray); 
+
+/*
+hsl($won-primary-color): #F04646;
+hsl($won-light-gray): #F0F2F4; //used for headings
+hsl($won-lighter-gray): #F8F9F9; //used for background
+hsl($won-line-gray): #CBD2D1; //use for lines
+hsl($won-subtitle-gray): #808080;
+hsl($won-helpbox-yellow): #FFFCE5;
+hsl($won-secondary-color): #00325A;
+hsl($won-dark-purple): #673A68;
+hsl($won-secondary-color-lighter): #468CDC;
+hsl($won-dark-gray): #303A43; 
+*/
 
 
 // sizes
@@ -36,8 +49,8 @@ $smallFontSize: 0.75rem;
 $formInputHeight: 3.69rem;
 $thinBorderWidth: 0.0625rem; /* 1px @ 100% */
 $boldBorderWidth: 0.1875rem; /* 3px @ 100% */
-$thinGrayBorder: $thinBorderWidth solid $won-line-gray;
-$thinRedBorder: $thinBorderWidth solid $won-red;
+$thinGrayBorder: $thinBorderWidth solid hsl($won-line-gray);
+$thinRedBorder: $thinBorderWidth solid hsl($won-primary-color);
 
 @mixin carretSized { //the small down-arrow
   /*

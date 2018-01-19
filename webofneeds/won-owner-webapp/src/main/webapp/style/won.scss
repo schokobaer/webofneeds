@@ -67,7 +67,7 @@ body {
   //this font will be inherited down the cascade
   @include default-font;
 
-  background-color: $won-lighter-gray;
+  background-color: hsl($won-lighter-gray);
 
   @extend %fixed-fill;
 
@@ -140,17 +140,17 @@ main {
 hr {
   border: 0;
   height: 1px;
-  background: $won-line-gray;
-  color: $won-line-gray;
+  background: hsl($won-line-gray);
+  color: hsl($won-line-gray);
 }
 
 a {
-  //color: $won-red;
-  color: $won-lighter-blue;
+  //color: hsl($won-primary-color);
+  color: hsl($won-secondary-color-lighter);
   text-decoration: none;
   &:visited {
-    //color: darken($won-red, 30%);
-    color: darken($won-lighter-blue, 15%);
+    //color: darken(hsl($won-primary-color), 30%);
+    color: darken(hsl($won-secondary-color-lighter), 15%);
   }
 }
 

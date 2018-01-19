@@ -13,12 +13,12 @@ won-connection-selection-item {
   }
 
   .conn__unreadCount {
-    color: $won-red;
+    color: hsl($won-primary-color);
     margin-left: 0.5rem;
   }
 
   $greyBorder: $thinGrayBorder;
-  $invisibleBorder: 0.1rem solid $won-lighter-gray;
+  $invisibleBorder: 0.1rem solid hsl($won-lighter-gray);
 
   .conn__inner.selected {
     border-top: $greyBorder;

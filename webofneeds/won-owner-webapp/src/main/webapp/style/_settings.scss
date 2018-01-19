@@ -20,7 +20,7 @@
   .subtitle{
     text-align: left;
     font-size: $smallFontSize;
-    color: $won-subtitle-gray;
+    color: hsl($won-subtitle-gray);
   }
 
   won-notification-settings,
@@ -251,7 +251,7 @@
 
             .avatarimage__header {
               padding: 0.5rem;
-              background: $won-light-gray;
+              background: hsl($won-light-gray);
               display: flex;
               flex-direction: column;
               align-items: flex-end;

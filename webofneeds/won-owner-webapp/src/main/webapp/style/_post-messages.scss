@@ -75,7 +75,7 @@
         padding-top:0.7em;
       }
       &__options {
-        color: $won-red;
+        color: hsl($won-primary-color);
         padding-top:0.5em;
         padding-right:0.3em;
         &__icon{
@@ -115,14 +115,14 @@
           justify-content: flex-start;
 
           & .pm__content__message__content__text {
-            @include speech-bubble-left($won-light-gray, $won-line-gray, 0.3125rem, $thinBorderWidth, 0.5rem);
+            @include speech-bubble-left(hsl($won-light-gray), hsl($won-line-gray), 0.3125rem, $thinBorderWidth, 0.5rem);
           }
         }
         &.right{
           justify-content: flex-end;
 
           & .pm__content__message__content__text {
-            @include speech-bubble-right($won-light-gray, $won-line-gray, 0.3125rem, $thinBorderWidth, 0.5rem);
+            @include speech-bubble-right(hsl($won-light-gray), hsl($won-line-gray), 0.3125rem, $thinBorderWidth, 0.5rem);
           }
         }
 
@@ -133,11 +133,11 @@
           &__text{
             padding: 0.5rem;
             border: $thinGrayBorder;
-            background: $won-light-gray;
+            background: hsl($won-light-gray);
           }
 
           &__time {
-            color: $won-line-gray;
+            color: hsl($won-line-gray);
           }
         }
       }

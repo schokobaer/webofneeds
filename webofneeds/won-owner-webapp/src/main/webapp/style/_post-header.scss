@@ -12,7 +12,7 @@ won-post-header {
   @include square-image($postIconSize, 0, 0.5rem, 0, 0);
 
   won-square-image .image{
-    border: $thinBorderWidth solid $won-light-gray;
+    border: $thinBorderWidth solid hsl($won-light-gray);
   }
 
   .ph__right {
@@ -29,12 +29,12 @@ won-post-header {
 
       &__date {
         font-size: $smallFontSize;
-        color: $won-subtitle-gray;
+        color: hsl($won-subtitle-gray);
       }
     }
 
     &__subtitle {
-      color: $won-subtitle-gray;
+      color: hsl($won-subtitle-gray);
       display: flex;
       flex-direction: row;
       font-size: $smallFontSize;

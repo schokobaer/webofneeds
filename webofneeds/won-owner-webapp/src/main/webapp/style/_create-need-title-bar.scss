@@ -20,10 +20,10 @@
   }
 
   @media (max-width: $responsivenessBreakPoint) {
-    @include speech-bubble-top($won-light-gray, $won-line-gray, 1rem, $thinBorderWidth, calc(50vw - 0.7rem));
+    @include speech-bubble-top(hsl($won-light-gray), hsl($won-line-gray), 1rem, $thinBorderWidth, calc(50vw - 0.7rem));
   }
   @media (min-width: $responsivenessBreakPoint) {
-    @include speech-bubble-top($won-light-gray, $won-line-gray, 1rem, $thinBorderWidth, 50vw);
+    @include speech-bubble-top(hsl($won-light-gray), hsl($won-line-gray), 1rem, $thinBorderWidth, 50vw);
   }
 }
 
@@ -46,14 +46,14 @@
 
   @media (min-width: $maxContentWidth) {
     // tail above sign-in via offset from right edge of max-content-width area
-    @include speech-bubble-top($won-light-gray, $won-line-gray, 1rem, $thinBorderWidth, calc(50vw + #{$maxContentWidth/2 - 8.8rem}));
+    @include speech-bubble-top(hsl($won-light-gray), hsl($won-line-gray), 1rem, $thinBorderWidth, calc(50vw + #{$maxContentWidth/2 - 8.8rem}));
   }
   @media (min-width: $responsivenessBreakPoint) and (max-width: $maxContentWidth) {
     // tail above sign-in via offset from right window-border
-    @include speech-bubble-top($won-light-gray, $won-line-gray, 1rem, $thinBorderWidth, calc(100vw - 9.8rem));
+    @include speech-bubble-top(hsl($won-light-gray), hsl($won-line-gray), 1rem, $thinBorderWidth, calc(100vw - 9.8rem));
   }
   @media (max-width: $responsivenessBreakPoint) {
     // tail is above sign-in-dropdown (where sign-up is hidden at that point)
-    @include speech-bubble-top($won-light-gray, $won-line-gray, 1rem, $thinBorderWidth, calc(100vw - 4rem));
+    @include speech-bubble-top(hsl($won-light-gray), hsl($won-line-gray), 1rem, $thinBorderWidth, calc(100vw - 4rem));
   }
 }

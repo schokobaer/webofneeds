@@ -1,3 +1,30 @@
 :root {
   --skinning-test-var:  rgb(165, 14, 185);
+  /* --won-primary-color: 240, 70, 70; #F04646; rgb(240, 70, 70); */
+
+
+
+
+  /* 
+   * COLORS
+   * using hsl values without the hsl-function-call (to allow adding alpha in the css) 
+   */
+
+  --won-primary-color: 0, 85%, 61%;
+  --won-secondary-color: 207, 100%, 18%;
+  --won-secondary-color-lighter: 212, 68%, 57%;
+
+  /*used for headings*/
+  --won-light-gray: 210, 15%, 95%; 
+
+  /*used for background*/
+  --won-lighter-gray: 180, 8%, 97%; 
+
+  /*use for lines*/
+  --won-line-gray: 171, 7%, 81%; 
+
+  --won-subtitle-gray: 0, 0%, 50%;
+  --won-helpbox-yellow: 53, 100%, 95%;
+  --won-dark-purple: 299, 28%, 32%;
+  --won-dark-gray: 208, 17%, 23%; 
 }
