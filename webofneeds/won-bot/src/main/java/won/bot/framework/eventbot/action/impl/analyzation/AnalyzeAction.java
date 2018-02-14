@@ -30,6 +30,7 @@ import won.bot.framework.eventbot.event.impl.analyzation.precondition.Preconditi
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageReceivedOnConnectionEvent;
 import won.bot.framework.eventbot.listener.EventListener;
+import won.protocol.highlevel.HighlevelProtocols;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.LinkedDataSource;
@@ -71,6 +72,7 @@ public class AnalyzeAction extends BaseEventBotAction {
                     bus.publish(new PreconditionUnmetEvent(con, result));
                 }
             }
+
             //TODO: THIS IS SOLELY FOR DEBUG PURPOSES NOW
             if(event instanceof MessageFromOtherNeedEvent) {
                 logger.info("Analyzing MessageFromOtherNeedEvent");
@@ -78,11 +80,7 @@ public class AnalyzeAction extends BaseEventBotAction {
 
                 String textMessage = WonRdfUtils.MessageUtils.getTextMessage(messageFromOtherNeedEvent.getWonMessage());
 
-                if("PreconditionMetEvent".equals(textMessage)){
-                    bus.publish(new PreconditionMetEvent(con, null));
-                }else if("PrecondtionUnmetEvent".equals(textMessage)){
-                    bus.publish(new PreconditionUnmetEvent(con, null));
-                } else if("AgreementCanceledEvent".equals(textMessage)){
+                if("AgreementCanceledEvent".equals(textMessage)){
                     bus.publish(new AgreementCanceledEvent(con, new Object()));
                 }else if("AgreementAcceptedEvent".equals(textMessage)){
                     bus.publish(new AgreementAcceptedEvent(con, new Object()));
