@@ -2,13 +2,14 @@
 
 import angular from 'angular';
 import 'ng-redux';
-import postHeaderModule from './post-header.js';
+import connectionHeaderModule from './connection-header.js';
 import feedbackGridModule from './feedback-grid.js';
 import postSeeksInfoModule from './post-seeks-info.js';
 import postIsInfoModule from './post-is-info.js';
 import postShareLinkModule from './post-share-link.js';
 import labelledHrModule from './labelled-hr.js';
 import chatTextFieldSimpleModule from './chat-textfield-simple.js';
+import connectionContextDropdownModule from './connection-context-dropdown.js';
 
 import {
     selectOpenPostUri,
@@ -27,46 +28,25 @@ import {
 } from '../utils.js';
 import { actionCreators }  from '../actions/actions.js';
 
-const serviceDependencies = ['$ngRedux', '$scope'];
+const serviceDependencies = ['$ngRedux', '$scope', '$element'];
 
 
 function genComponentConf() {
     let template = `
         <div class="post-info__header" ng-if="self.includeHeader">
-            <a class="clickable"
+            <a class="post-info__header__back clickable show-in-responsive"
                ng-click="self.router__stateGoCurrent({connectionUri : undefined, sendAdHocRequest: undefined})">
                 <svg style="--local-primary:var(--won-primary-color);"
-                     class="post-info__header__icon clickable">
-                    <use href="#ico36_close"></use>
+                     class="post-info__header__back__icon clickable">
+                    <use xlink:href="#ico36_backarrow" href="#ico36_backarrow"></use>
                 </svg>
             </a>
-            <won-post-header
-                need-uri="self.postUriToConnectTo"
-                timestamp="self.createdTimestamp"
+            <won-connection-header
+                connection-uri="self.connection.get('uri')"
+                timestamp="self.connection.get('lastUpdateDate')"
                 hide-image="::false">
-            </won-post-header>
-            <svg class="post-info__header__icon__small clickable"
-                style="--local-primary:#var(--won-secondary-color);"
-                ng-show="!self.contextMenuOpen"
-                ng-if="self.connection && self.connection.get('isRated')"
-                ng-click="self.contextMenuOpen = true">
-                    <use href="#ico16_arrow_down"></use>
-            </svg>
-            <div class="post-info__header__contextmenu contextmenu" ng-show="self.contextMenuOpen">
-                <div class="content" ng-click="self.contextMenuOpen = false">
-                    <div class="topline">
-                      <svg class="post-info__header__icon__small__contextmenu clickable"
-                        style="--local-primary:black;">
-                            <use href="#ico16_arrow_up"></use>
-                      </svg>
-                    </div>
-                    <button ng-if="self.connection && self.connection.get('isRated')"
-                        class="won-button--filled red"
-                        ng-click="self.closeConnection()">
-                            Close Connection
-                    </button>
-                </div>
-            </div>
+            </won-connection-header>
+            <won-connection-context-dropdown ng-if="self.connection && self.connection.get('isRated')"></won-connection-context-dropdown>
         </div>
         <div class="post-info__content">
             <won-gallery ng-show="self.suggestedPost.get('hasImages')">
@@ -90,12 +70,22 @@ function genComponentConf() {
             </div>
             </br>
             <a class="rdflink clickable"
+               ng-if="self.shouldShowRdf && self.connection"
+               target="_blank"
+               href="{{ self.connectionUri }}">
+                    <svg class="rdflink__small">
+                        <use xlink:href="#rdf_logo_1" href="#rdf_logo_1"></use>
+                    </svg>
+                    <span class="rdflink__label">Connection</span>
+            </a>
+            <a class="rdflink clickable"
                ng-if="self.shouldShowRdf"
                target="_blank"
-               href="{{!self.connection ? self.postUriToConnectTo : self.connectionUri}}">
+               href="{{ self.postUriToConnectTo }}">
                     <svg class="rdflink__small">
-                        <use href="#rdf_logo_1"></use>
+                        <use xlink:href="#rdf_logo_1" href="#rdf_logo_1"></use>
                     </svg>
+                    <span class="rdflink__label">Post</span>
             </a>
         </div>
         <div class="post-info__footer">
@@ -196,11 +186,6 @@ function genComponentConf() {
                 this.router__stateGoCurrent({connectionUri: this.connectionUri})
             }
         }
-
-        closeConnection(){
-            this.connections__close(this.connectionUri);
-            this.router__stateGoCurrent({connectionUri: null});
-        }
     }
     Controller.$inject = serviceDependencies;
 
@@ -219,11 +204,12 @@ function genComponentConf() {
 export default angular.module('won.owner.components.sendRequest', [
     postIsInfoModule,
     postSeeksInfoModule,
-    postHeaderModule,
+    connectionHeaderModule,
     feedbackGridModule,
     labelledHrModule,
     chatTextFieldSimpleModule,
-    postShareLinkModule
+    postShareLinkModule,
+    connectionContextDropdownModule,
 ])
     .directive('wonSendRequest', genComponentConf)
     .name;

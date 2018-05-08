@@ -16,7 +16,6 @@ import {
 
 import {
     fetchDataForOwnedNeeds,
-    buildRelevantMessage,
 	callAgreementsFetch,
 } from '../won-message-utils.js';
 
@@ -113,24 +112,6 @@ export function successfulCloseConnection(event) {
                 payload: event
             })
         }
-    }
-}
-
-//TODO move redirect elsewhere (e.g. to click-handler) then remove
-export function successfulOpen(event){
-    return (dispatch, getState) => {
-        const state = getState();
-        dispatch({
-            type: actionTypes.messages.open.successOwn,
-            payload: {
-                event,
-            }
-        });
-
-        dispatch(actionCreators.router__stateGoAbs("connections", {
-            postUri: event.getReceiverNeed(),
-            connectionUri: event.getReceiver(),
-        }));
     }
 }
 
@@ -232,22 +213,39 @@ export function connectionMessageReceived(event) {
                   		
                   	case "PROPOSES":
                   		console.log("PROPOSES");
-                  		/*
-                  		/if(effect.proposalType === "CANCELS") {
-                  			for(i = 0; i < effect.proposesToCancel.length; i++) {
-                  				let messageUri = effect.proposesToCancel[i];
-                      			setToUnrelevant(messages, messageUri, needUri, connectionUri);
-                  			}
-                  		}*/
                   		break;
                   		
                   	case "REJECTS":
                   		console.log("REJECTS");
+                     	if(effect.rejects) {
+	              			let messageUri = getEventUri(messages, effect.rejectedMessageUri);
+	              			dispatch({
+	            		        type: actionTypes.messages.markAsRelevant,
+	            		        payload: {
+	            		    			 messageUri: messageUri,
+	            		                 connectionUri: connectionUri,
+	            		                 needUri: needUri,
+	            		                 relevant: false,
+	            	 			}
+	            			});
+	              		}
                   		break;
 
                      case "RETRACTS":
                      	console.log("RETRACTS");
-                         break;
+                     	if(effect.retracts) {
+	              			let messageUri = getEventUri(messages, effect.retractedMessageUri);
+	              			dispatch({
+	            		        type: actionTypes.messages.markAsRelevant,
+	            		        payload: {
+	            		    			 messageUri: messageUri,
+	            		                 connectionUri: connectionUri,
+	            		                 needUri: needUri,
+	            		                 relevant: false,
+	            	 			}
+	            			});
+	              		}
+	              		break;
 
                      default:
                      	//return state;
@@ -379,51 +377,14 @@ export function markAsRelevant(event) {
                  needUri: event.needUri,
                  relevant: event.relevant,
         }
-		 
-		 //own State
+
 		 dispatch({
 			 type: actionTypes.messages.markAsRelevant,
 			 payload: payload,
 		 });
-		 
-		 /*
-		 //remoteState
-		 const ownNeed = getState().getIn(["needs", event.needUri]);
-         const theirNeedUri = getState().getIn(["needs", event.needUri, "connections", event.connectionUri, "remoteNeedUri"]);
-         const theirNeed = getState().getIn(["needs", theirNeedUri]);
-         const theirConnectionUri = ownNeed.getIn(["connections", event.connectionUri, "remoteConnectionUri"]);
-		 const message = getState().getIn(["needs", event.needUri, "connections", event.connectionUri, "messages", event.messageUri]);
-         const msgToSet = message.get("remoteUri")? message.get("remoteUri") : event.messageUri;
-		 
-         buildRelevantMessage(msgToSet, event.connectionUri, event.needUri, theirNeedUri, ownNeed.get("nodeUri"), theirNeed.get("nodeUri"), theirConnectionUri, event.relevant)
-         .then( action => 
-         	dispatch({
-         		type: actionTypes.messages.send,
-         		payload: {
-         			eventUri: action.eventUri,
-         			message: action.message,
-         		}
-         	})
-         );*/
 	 }
 }
 
-export function unsetRelevantMessageReceived(message, relevant) {
-	//TODO see whats in the message and load the rest
-	return (dispatch, getState) => {
-		 //own State
-		 const payload = {
-	        messageUri: message.isUnsetRelevantMessage(),
-	        connectionUri: message.getReceiver(),
-	        needUri: message.getReceiverNeed(),
-	        relevant: relevant,
-	    } 
-		 dispatch({
-			 type: actionTypes.messages.markAsRelevant,
-			 payload: payload,
-		 });
-	}
-}
 
 export function needMessageReceived(event) {
     return (dispatch, getState) => {

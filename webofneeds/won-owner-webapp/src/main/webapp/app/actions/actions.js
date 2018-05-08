@@ -110,6 +110,7 @@ const actionHierarchy = {
         showMoreMessages: cnct.showMoreMessages,
         markAsRead: INJ_DEFAULT,
         markAsRated: INJ_DEFAULT,
+        setLoading: INJ_DEFAULT,
     },
     needs: {
         received: INJ_DEFAULT,
@@ -189,7 +190,6 @@ const actionHierarchy = {
         },
         markAsRead: INJ_DEFAULT,
         markAsRelevant: messages.markAsRelevant,
-        unsetRelevantMessageReceived: messages.unsetRelevantMessageReceived,
         connectionMessageReceived: messages.connectionMessageReceived,
         needMessageReceived: messages.needMessageReceived,
         connectMessageReceived: messages.connectMessageReceived,
@@ -216,8 +216,6 @@ const actionHierarchy = {
         
         waitingForAnswer: INJ_DEFAULT,
     },
-    hideLogin: INJ_DEFAULT,
-    showLogin: INJ_DEFAULT,
     //anonymousLogin: anonAccountLogin,
     loginStarted: INJ_DEFAULT,
     login: accountLogin, //loginSuccess
@@ -234,6 +232,12 @@ const actionHierarchy = {
     reconnectSuccess: INJ_DEFAULT,
 
     toggleRdfDisplay: INJ_DEFAULT,
+    toggleClosedNeedsDisplay: INJ_DEFAULT,
+    hideClosedNeedsDisplay: INJ_DEFAULT,
+    showClosedNeedsDisplay: INJ_DEFAULT,
+
+    showMainMenuDisplay: INJ_DEFAULT,
+    hideMainMenuDisplay: INJ_DEFAULT,
 
     toasts: {
         delete: INJ_DEFAULT,

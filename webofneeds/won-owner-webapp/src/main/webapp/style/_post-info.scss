@@ -1,6 +1,7 @@
 @import 'won-config';
 @import 'sizing-utils';
 @import 'animate';
+@import 'responsiveness-utils';
 
 won-send-request,
 won-post-info {
@@ -26,49 +27,30 @@ won-post-info {
   }
 
   .post-info__header {
-    display:flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "header_back header_title header_context";
     grid-area: header;
     font-size: $normalFontSize;
     text-align: left;
-    width: 100%;
+    min-width: 0;
+    align-items: center;
 
-    &__icon {
-      @include fixed-square($postIconSize);
-    }
-
-    &__icon__small {
-      @include fixed-square(1.5rem);
-      padding-left: 0.5rem;
-    }
-
-    &__icon__small__contextmenu {
-      @include fixed-square(1.5rem);
-      //padding-left: 0.5rem;
-      position: relative;
-      top: -0.5rem;
-      right: -0.5rem;
-      float: right;
-    }
-
-    .post-info__header__contextmenu .content {
-      max-width: 15rem;
-      position: absolute;
-      right: 0;
-
-      a.won-button--outlined,
-      button {
-        margin-top: 0.5rem;
-        width: 100%;
-        white-space: nowrap;
+    &__back {
+      grid-area: header_back;
+      &__icon {
+        @include fixed-square($backIconSize);
       }
+    }
 
-      a.won-button--outlined{
-        cursor: pointer;
-        display: flex;
-        align-content: center;
-        align-items: center;
-        box-sizing: border-box;
-      }
+    won-post-header,
+    won-connection-header {
+      grid-area: header_title;
+    }
+
+    won-post-context-dropdown,
+    won-connection-context-dropdown {
+      grid-area: header_context;
     }
   }
 
@@ -80,9 +62,15 @@ won-post-info {
     border-top: $thinGrayBorder;
     padding-top: 1rem;
     overflow: auto;
+    word-wrap: break-word;
 
     won-labelled-hr span {
       background-color: white;
+    }
+
+    won-post-is-info,
+    won-post-seeks-info {
+      padding: 1rem 0;
     }
 
     won-need-map{

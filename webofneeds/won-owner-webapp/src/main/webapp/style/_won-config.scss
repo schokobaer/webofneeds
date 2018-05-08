@@ -29,6 +29,7 @@ $toastIconSize: 2rem;
 $postIconSize: 2.5rem;
 $postIconSizeMobile: 1.5rem;
 $feedIconSize: 3rem;
+$backIconSize: 1.25rem;
 
 $bigFontSize: 2rem;
 $mediumFontSize: 1.5rem;
@@ -60,8 +61,6 @@ $gridRowGap: 0.5rem;
 // should be used as max-width on all root-elements so the app has some
 // whitespace to the sides where it can be afforded
 $maxContentWidth: 70rem;
-
-$maxContentWidthLoginOverlay: 72rem;
 
 // use this to leave a consistent amount of space towards the edge of the viewport
 $minContentPadding: 1rem;

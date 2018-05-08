@@ -7,8 +7,9 @@ import Immutable from 'immutable';
 import chatTextFieldSimpleModule from './chat-textfield-simple.js';
 import connectionMessageModule from './connection-message.js';
 import connectionAgreementModule from './connection-agreement.js';
-import postHeaderModule from './post-header.js';
+import connectionHeaderModule from './connection-header.js';
 import labelledHrModule from './labelled-hr.js';
+import connectionContextDropdownModule from './connection-context-dropdown.js';
 
 import {
     } from '../won-label-utils.js'
@@ -60,52 +61,19 @@ const defaultAgreementData = deepFreeze({
 function genComponentConf() {
     let template = `
         <div class="pm__header">
-            <a class="clickable"
+            <a class="pm__header__back clickable show-in-responsive"
                ng-click="self.router__stateGoCurrent({connectionUri : undefined})">
                 <svg style="--local-primary:var(--won-primary-color);"
-                     class="pm__header__icon clickable">
-                    <use href="#ico36_close"></use>
+                     class="pm__header__back__icon clickable">
+                    <use xlink:href="#ico36_backarrow" href="#ico36_backarrow"></use>
                 </svg>
             </a>
-            <won-post-header
-                need-uri="self.theirNeed.get('uri')"
+            <won-connection-header
+                connection-uri="self.connection.get('uri')"
                 timestamp="self.lastUpdateTimestamp"
-                hide-image="::true">
-            </won-post-header>
-            <svg class="pm__header__icon__small clickable"
-                style="--local-primary:#var(--won-secondary-color);"
-                ng-if="self.isConnected || self.isSentRequest"
-                ng-style="{'visibility': !self.contextMenuOpen}"
-                ng-click="self.contextMenuOpen = true">
-                    <use href="#ico16_arrow_down"></use>
-            </svg>
-            <div class="pm__header__contextmenu contextmenu" ng-show="self.contextMenuOpen">
-                <div class="content" ng-click="self.contextMenuOpen=false">
-                    <div class="topline">
-                      <svg class="pm__header__icon__small__contextmenu clickable"
-                        style="--local-primary:black;">
-                            <use href="#ico16_arrow_up"></use>
-                      </svg>
-                    </div>
-                    <button
-                        class="won-button--outlined thin red"
-                        ng-click="self.goToPost()">
-                        Show Post Details
-                    </button>
-                    <button
-                        ng-if="self.isConnected"
-                        class="won-button--filled red"
-                        ng-click="self.closeConnection()">
-                        Close Connection
-                    </button>
-                    <button
-                        ng-if="self.isSentRequest"
-                        class="won-button--filled red"
-                        ng-click="self.closeConnection()">
-                        Cancel Request
-                    </button>
-                </div>
-            </div>
+                hide-image="::false">
+            </won-connection-header>
+            <won-connection-context-dropdown ng-if="self.isConnected || self.isSentRequest || self.isReceivedRequest"></won-connection-context-dropdown>
         </div>
         <div class="pm__content">
             <div class="pm__content__loadspinner"
@@ -138,14 +106,14 @@ function genComponentConf() {
                 <svg style="--local-primary:var(--won-primary-color);"
                     class="pm__content__agreement__icon clickable"
                     ng-click="self.showAgreementData = !self.showAgreementData">
-                    <use href="#ico36_close"></use>
+                    <use xlink:href="#ico36_close" href="#ico36_close"></use>
                 </svg>
                 
                 <!-- Agreements-->
             	<div class="pm__content__agreement__title" ng-show="self.agreementStateData.agreementUris.size || self.agreementStateData.cancellationPendingAgreementUris.size"> 
             		Agreements
-            		<span ng-show="self.isLoading"> (loading...)</span>
-            		<span ng-if="!self.isLoading"> (up-to-date)</span>
+            		<span ng-show="self.connection.get('isLoading')"> (loading...)</span>
+            		<span ng-if="!self.connection.get('isLoading')"> (up-to-date)</span>
             	</div>
 	            <won-connection-agreement
 	            	ng-repeat="agreement in self.getArrayFromSet(self.agreementStateData.agreementUris) track by $index"
@@ -153,7 +121,8 @@ function genComponentConf() {
 	                agreement-number="$index"
 	                agreement-declaration="self.declarations.agreement"
 	                connection-uri="self.connectionUri"
-	                on-update="self.showAgreementData = false;">
+	                on-update="self.showAgreementData = false"
+	                on-remove-data="[self.filterMessages(proposalUri), self.showAgreementData = false]">
 	            </won-connection-agreement>
 	            <!-- /Agreements -->
 	            <!-- ProposeToCancel -->
@@ -175,8 +144,8 @@ function genComponentConf() {
             		<br ng-show="self.agreementStateData.agreementUris.size || self.agreementStateData.cancellationPendingAgreementUris.size" />
             		<hr ng-show="self.agreementStateData.agreementUris.size || self.agreementStateData.cancellationPendingAgreementUris.size" />
             		Proposals
-    				<span ng-show="self.isLoading"> (loading...)</span>
-            		<span ng-if="!self.isLoading"> (up-to-date)</span>
+    				<span ng-show="self.connection.get('isLoading')"> (loading...)</span>
+            		<span ng-if="!self.connection.get('isLoading')"> (up-to-date)</span>
             	</div>
 	            <won-connection-agreement
 	            	ng-repeat="proposal in self.getArrayFromSet(self.agreementStateData.pendingProposalUris) track by $index"
@@ -196,25 +165,25 @@ function genComponentConf() {
                 <svg style="--local-primary:var(--won-primary-color);"
                     class="pm__content__agreement__icon clickable"
                     ng-click="(self.showAgreementData = !self.showAgreementData) && (self.showLoadingInfo = !self.showLoadingInfo)">
-                    <use href="#ico36_close"></use>
+                    <use xlink:href="#ico36_close" href="#ico36_close"></use>
                 </svg>
                 
                 <div class="pm__content__agreement__title"> 
-	            		<span class="ng-hide" ng-show="self.isLoading">Loading the Agreement Data. Please be patient, because patience is a talent :)</span>
-	            		<span class="ng-hide" ng-show="!self.isLoading">No Agreement Data found</span>
+	            		<span class="ng-hide" ng-show="self.connection.get('isLoading')">Loading the Agreement Data. Please be patient, because patience is a talent :)</span>
+	            		<span class="ng-hide" ng-show="!self.connection.get('isLoading')">No Agreement Data found</span>
             	</div>
             </div>
             <a class="rdflink clickable"
                ng-if="self.shouldShowRdf"
                target="_blank"
-               href="{{self.connection.get('uri')}}">
+               href="{{ self.connection.get('uri') }}">
                     <svg class="rdflink__small">
-                        <use href="#rdf_logo_1"></use>
+                        <use xlink:href="#rdf_logo_1" href="#rdf_logo_1"></use>
                     </svg>
+                    <span class="rdflink__label">Connection</span>
             </a>
         </div>
         <div class="pm__footer" ng-if="self.isConnected">
-
             <chat-textfield-simple
                 class="pm__footer__chattexfield"
                 placeholder="self.shouldShowRdf? 'Enter TTL...' : 'Your message...'"
@@ -324,7 +293,20 @@ function genComponentConf() {
 	                				}
 	                			)
 	                		}
-                		}
+                		} else if(this.agreementHeadData.retractedMessageUris.size) {
+                			//TODO: filter out retracted messages faster
+                			if(msg.get("isRelevant") && this.isOldAgreementMsg(msg)) {
+                				msg.hide = true;
+	                			this.messages__markAsRelevant(
+	                				payload = {
+                 		    			 messageUri: msg.get('uri'),
+                 		                 connectionUri: connectionUri,
+                 		                 needUri: ownNeed.get('uri'),
+                 		                 relevant: false,
+	                				}
+	                			)
+                			}
+                		}               		
                 	}
                 	
                 	sortedMessages = Array.from(msgSet);
@@ -370,7 +352,7 @@ function genComponentConf() {
                         // scroll to bottom directly after rendering, if snapped
                         this.updateScrollposition()
                 )
-            )
+            );
         }
 
         ensureMessagesAreLoaded() {
@@ -404,6 +386,8 @@ function genComponentConf() {
             if(this._snapBottom) {
                 this.scrollToBottom();
             }
+            //new message income
+            //this.showAgreementData = false;
         }
         scrollToBottom() {
             this._programmaticallyScrolling = true;
@@ -463,9 +447,11 @@ function genComponentConf() {
         getAgreementData(connection) {
             if(connection) {
                 this.connection = connection;
+            }else {
+	          	this.connections__setLoading(payload = {connectionUri: this.connectionUri, isLoading: true});
             }
-
-        	this.isLoading = true;
+          
+        	
         	this.agreementLoadingData = this.cloneDefaultStateData();
             this.getAgreementDataUris();
         }
@@ -473,6 +459,7 @@ function genComponentConf() {
 
         getAgreementDataUris() {
             var url = this.baseString + 'rest/agreement/getAgreementProtocolUris?connectionUri='+this.connection.get('uri');
+            var hasChanged = false;
             callAgreementsFetch(url)
                 .then(response => {
                     this.agreementHeadData = this.transformDataToSet(response);
@@ -480,17 +467,38 @@ function genComponentConf() {
                     for(key of keySet) {
                         if(this.agreementHeadData.hasOwnProperty(key)) {
                             for(data of this.agreementHeadData[key]) {
-	    					this.addAgreementDataToSate(data, key);
+                            	this.addAgreementDataToSate(data, key);
+                            	hasChanged = true;
                             }
                         }
                     }
-                }).then(response => {
-    				this.agreementStateData = this.agreementLoadingData;
-    				this.isLoading = false;
-    				this.snapToBottom();
-    		}).catch(error => {
+                    
+                    //Remove all retracted/rejected messages
+                    if(this.agreementHeadData["rejectedMessageUris"] || this.agreementHeadData["retractedMessageUris"]) {
+                    	let removalSet = new Set([...this.agreementHeadData["rejectedMessageUris"], ...this.agreementHeadData["retractedMessageUris"]]);
+                    	
+                    	for(uri of removalSet) {
+	                    	//for(key of keySet) {
+                    		var key = "pendingProposalUris";
+                            for(obj of this.agreementStateData[key]) {
+	                    		if(obj.stateUri === uri || obj.headUri === uri) {
+	                            	console.log("Message " + uri + " was removed");
+	                            	this.agreementStateData[key].delete(obj);
+	                            	hasChanged = true;
+	                    		}
+                            }
+	                        
+                    	}
+                    }
+                    
+                }).then(() => {
+                	if(!hasChanged) {
+                		this.agreementStateData = this.agreementLoadingData;
+                		this.connections__setLoading(payload = {connectionUri: this.connectionUri, isLoading: false});
+                	}
+        		}).catch(error => {
     				console.error('Error:', error);
-    				this.isLoading = false;
+    				this.connections__setLoading(payload = {connectionUri: this.connectionUri, isLoading: false});
                 })
         }
 
@@ -523,7 +531,7 @@ function genComponentConf() {
 
         addAgreementDataToSate(eventUri, key, obj) {
             const ownNeedUri = this.ownNeed.get("uri");
-            callAgreementEventFetch(ownNeedUri, eventUri)
+            return callAgreementEventFetch(ownNeedUri, eventUri)
             .then(response => {
                 won.wonMessageFromJsonLd(response)
                 .then(msg => {
@@ -557,36 +565,41 @@ function genComponentConf() {
                     	if(!found) {
                     		this.messages__connectionMessageReceived(msg);
                     	}
-                    }
+                    	this.agreementStateData = this.agreementLoadingData;
+                    	this.connections__setLoading(payload = {connectionUri: this.connectionUri, isLoading: false});
+                    }  
                 })
             })
         }
 
-        filterAgreementStateData(agreementObject, remove) {
+        filterAgreementStateData(agreementObject, del) {
         	for(key of keySet) {
-    			this.checkObject(this.agreementStateData[key], agreementObject, remove)
+    			this.checkObject(key, agreementObject, del)
 			}
         }
         
-        checkObject(data, agreementObject, remove) {
-        	for(object of data) {
+        checkObject(key, agreementObject, del) {
+        	for(object of this.agreementStateData[key]) {
         		if(object.stateUri === agreementObject.stateUri) {
-        			if(remove) {
-        				data.delete(object);
+        			if(del.value) {
+        				this.agreementStateData[key].delete(object);
         			}
         			return true;
         		}
         	}
-        	
         	return false;
         }
         
         filterMessages(stateUri) {
         	var object = {
-        			stateUri: stateUri,
-        			headUri: undefined,
+    			stateUri: stateUri,
+    			headUri: undefined,
         	}
-        	this.filterAgreementStateData(object, true);
+        	
+        	var del = {
+    			value: true,
+        	}
+        	this.filterAgreementStateData(object, del);
         }
         
         getCancelUri(agreementUri) {
@@ -620,7 +633,11 @@ function genComponentConf() {
                 aD.cancelledAgreementUris.has(msg.get("uri")) ||
                 aD.cancelledAgreementUris.has(msg.get("remoteUri")) ||
                 aD.acceptedCancellationProposalUris.has(msg.get("uri")) ||
-                aD.acceptedCancellationProposalUris.has(msg.get("remoteUri"))) {
+                aD.acceptedCancellationProposalUris.has(msg.get("remoteUri")) ||
+                aD.retractedMessageUris.has(msg.get("uri")) ||
+                aD.retractedMessageUris.has(msg.get("remoteUri")) ||
+                aD.rejectedMessageUris.has(msg.get("uri")) ||
+                aD.rejectedMessageUris.has(msg.get("remoteUri"))) {
                 return true;
             }
             return false;
@@ -667,10 +684,6 @@ function genComponentConf() {
             this.connections__close(this.connection.get('uri'));
             this.router__stateGoCurrent({connectionUri: null});
         }
-
-        goToPost() {
-            this.router__stateGoCurrent({postUri: this.connection.get('remoteNeedUri')});
-        }
     }
     Controller.$inject = serviceDependencies;
 
@@ -689,8 +702,9 @@ export default angular.module('won.owner.components.postMessages', [
     chatTextFieldSimpleModule,
     connectionMessageModule,
     connectionAgreementModule,
-    postHeaderModule,
-    labelledHrModule
+    connectionHeaderModule,
+    labelledHrModule,
+    connectionContextDropdownModule,
 ])
     .directive('wonPostMessages', genComponentConf)
     .name;
