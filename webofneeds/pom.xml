@@ -42,6 +42,7 @@
         <module>won-utils</module>
         <module>won-vocab</module>
         <module>won-docker</module>
+        <module>won-paypal</module>
     </modules>
 
     <dependencyManagement>
