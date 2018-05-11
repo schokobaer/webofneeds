@@ -24,7 +24,7 @@ import won.bot.framework.eventbot.action.impl.MultipleActions;
 import won.bot.framework.eventbot.action.impl.RandomDelayedAction;
 import won.bot.framework.eventbot.action.impl.debugbot.*;
 import won.bot.framework.eventbot.action.impl.matcher.RegisterMatcherAction;
-import won.bot.framework.eventbot.action.impl.paypalbot.MyPaypalEventBotListenerAction;
+import won.bot.framework.eventbot.action.impl.paypalbot.PaypalIncomingMsgToEventMapper;
 import won.bot.framework.eventbot.action.impl.paypalbot.PaypalEchoMessagesAction;
 import won.bot.framework.eventbot.action.impl.wonmessage.ConnectWithAssociatedNeedAction;
 import won.bot.framework.eventbot.action.impl.wonmessage.HintAssociatedNeedAction;
@@ -216,7 +216,7 @@ public class PaypalBot extends EventBot {
         
         // here goes the party !!!
         // Integrate MyPayPalEventBotListenerAction ===============================================
-        EventBotAction paypalCommandAction = new MyPaypalEventBotListenerAction(ctx);
+        EventBotAction paypalCommandAction = new PaypalIncomingMsgToEventMapper(ctx);
         messageFromOtherNeedListener = new ActionOnEventListener(ctx, paypalCommandAction);
         bus.subscribe(MessageFromOtherNeedEvent.class, messageFromOtherNeedListener);
         

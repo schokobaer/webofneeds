@@ -306,6 +306,13 @@
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
         </dependency>
+        
+        <!-- Paypal -->
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>adaptivepaymentssdk</artifactId>
+            <version>2.7.117</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
