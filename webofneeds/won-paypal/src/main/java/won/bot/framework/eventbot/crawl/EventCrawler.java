@@ -52,11 +52,11 @@ public class EventCrawler {
 		AgreementProtocolState state = WonConversationUtils.getAgreementProtocolState(con.getConnectionURI(), ctx.getLinkedDataSource());
 		crawlStopWatch.stop();
 		Duration crawlDuration = Duration.ofMillis(crawlStopWatch.getLastTaskTimeMillis());
-		Model messageModel = WonRdfUtils.MessageUtils
-				.textMessage("Finished crawl in " + getDurationString(crawlDuration) + " seconds. The dataset has "
-						+ state.getConversationDataset().asDatasetGraph().size() + " rdf graphs.");
-		eventListenerContext.getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
-		messageModel = makeReferringMessage(state, messageFinder, messageReferrer, textMessageMaker);	
+//		Model messageModel = WonRdfUtils.MessageUtils
+//				.textMessage("Finished crawl in " + getDurationString(crawlDuration) + " seconds. The dataset has "
+//						+ state.getConversationDataset().asDatasetGraph().size() + " rdf graphs.");
+//		eventListenerContext.getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
+		Model messageModel = makeReferringMessage(state, messageFinder, messageReferrer, textMessageMaker);	
 		eventListenerContext.getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
 		crawlConnectionDataBehaviour.activate();
 	}

@@ -4,6 +4,8 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,10 +46,7 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
             WonMessage msg = ((MessageEvent) messageEvent).getWonMessage();
             String message = extractTextMessageFromWonMessage(msg);
             
-            if (message.startsWith("paypal ")) {
-            	String cmd = message.substring(7);
-            	handleMsg(cmd, con, bus);
-            }
+            handleMsg(message, con, bus);
 		}
 
 	}
@@ -59,11 +58,34 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
         	String echo = cmd.substring(5);
         	bus.publish(new PayPalEchoCommandEvent(con, echo));
         }
-        else if (cmd.startsWith("accept ")) {
+        else if (cmd.equals("usage")) {
+        	bus.publish(new PayPalEchoCommandEvent(con, "echo: Repeats everything behind the echo"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "accept: Accepts the last proposal"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "payment receiver: Sends the receiver address of the bot and proposes it to you"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "payment types: Sends a list of the supported payment types of the bot"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "payment validate: Validates the accepted payment messages, summarizes them and proposes that"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "payment check: Checks if the last payment is complete"));
+        }
+        else if (cmd.equals("accept")) {
         	accept(ctx, bus, con);
         }
-        else if (cmd.startsWith("asdf")) {
-        	accept(ctx, bus, con);
+        else if (cmd.equals("payment receiver")) {
+        	// TODO: Implement
+        	String msg = "pay_rec: test@won.org";
+        	bus.publish(new PayPalEchoCommandEvent(con, msg));
+        	propose(ctx, bus, con, true, false, 1);
+        }
+        else if (cmd.equals("payment types")) {
+        	bus.publish(new PayPalEchoCommandEvent(con, "pay_type: PaypalPayment"));
+        	bus.publish(new PayPalEchoCommandEvent(con, "pay_type: Cash"));
+        }
+        else if (cmd.equals("payment validate")) {
+        	// TODO: Implement
+        	bus.publish(new PayPalEchoCommandEvent(con, "Validation is not implemented yet..."));
+        }
+        else if (cmd.equals("payment check")) {
+        	// TODO: Implement
+        	bus.publish(new PayPalEchoCommandEvent(con, "Checking is not implemented yet..."));
         }
 	}
 
@@ -80,6 +102,29 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
 		bus.publish(new ConnectionMessageCommandEvent(con, messageModel));
 	}
 	
+	private void propose(EventListenerContext ctx, EventBus bus, Connection con, boolean allowOwnClauses, boolean allowCounterpartClauses, int count) {
+		String whose = allowOwnClauses ? allowCounterpartClauses ? "our" : "my" : allowCounterpartClauses ? "your" : " - sorry, don't know which ones to choose, actually - ";  
+		crawler.referToEarlierMessages(ctx, bus, con, 
+				state -> {
+					return state.getNLatestMessageUris(m -> {
+						URI ownNeedUri = con.getNeedURI();
+						URI remoteNeedUri = con.getRemoteNeedURI();
+						return 
+								ownNeedUri != null && ownNeedUri.equals(m.getSenderNeedURI()) && allowOwnClauses || 
+						   	    remoteNeedUri != null && remoteNeedUri.equals(m.getSenderNeedURI()) && allowCounterpartClauses;
+								
+					},count).subList(0, count);
+				}, 
+				(messageModel, uris) -> WonRdfUtils.MessageUtils.addProposes(messageModel, uris),
+				(Duration queryDuration, AgreementProtocolState state, URI... uris) -> {
+					if (uris == null || uris.length == 0 || uris[0] == null) {
+						return "Sorry, I cannot propose the messages - I did not find any.";
+					}
+					Optional<String> proposedString = state.getTextMessage(uris[0]);
+			        return "Ok, I am hereby making the proposal, containing " + uris.length + " clauses.";
+				});
+	}
+	
 	private void accept(EventListenerContext ctx, EventBus bus, Connection con) {
 		crawler.referToEarlierMessages(ctx, bus, con, 
 				state -> {
@@ -93,6 +138,12 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
 					}
 			        return "Ok, I am hereby accepting your latest proposal (uri: " + uris[0]+").";
 				});
+	}
+	
+	private void validate(EventListenerContext ctx, EventBus bus, Connection con) {
+		Map<String, String> acceptedPayMsgs = new HashMap<>();
+		
+		// TODO: Implement
 	}
 
 }
