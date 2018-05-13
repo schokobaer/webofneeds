@@ -29,5 +29,6 @@ public class WONPAY {
 	public static final Resource PAYMENT_STATE_COMPLETE = m.createResource(MODEL_URI + "Complete");
 	
 	public static final Resource PAYPAL_PAYMENT = m.createResource(MODEL_URI + "PaypalPayment");
+	public static final Resource CASH_PAYMENT = m.createResource(MODEL_URI + "Cash");
 
 }

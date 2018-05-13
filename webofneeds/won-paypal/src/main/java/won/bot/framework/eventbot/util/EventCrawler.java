@@ -1,4 +1,4 @@
-package won.bot.framework.eventbot.crawl;
+package won.bot.framework.eventbot.util;
 
 import java.net.URI;
 import java.text.DecimalFormat;

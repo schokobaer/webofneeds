@@ -14,7 +14,6 @@ import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.bus.EventBus;
-import won.bot.framework.eventbot.crawl.EventCrawler;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.ConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
@@ -22,6 +21,8 @@ import won.bot.framework.eventbot.event.MessageEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.event.impl.paypalbot.PayPalEchoCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
+import won.bot.framework.eventbot.util.EventCrawler;
+import won.bot.framework.eventbot.util.PaymentUtil;
 import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.message.WonMessage;
 import won.protocol.model.Connection;
@@ -81,7 +82,8 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
         }
         else if (cmd.equals("payment validate")) {
         	// TODO: Implement
-        	bus.publish(new PayPalEchoCommandEvent(con, "Validation is not implemented yet..."));
+        	//bus.publish(new PayPalEchoCommandEvent(con, "Validation is not implemented yet..."));
+        	validate(ctx, bus, con);
         }
         else if (cmd.equals("payment check")) {
         	// TODO: Implement
@@ -141,9 +143,16 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
 	}
 	
 	private void validate(EventListenerContext ctx, EventBus bus, Connection con) {
-		Map<String, String> acceptedPayMsgs = new HashMap<>();
 		
-		// TODO: Implement
+		Model model = null;
+		
+		try {
+			model = PaymentUtil.generateModelByAgreements(con, ctx);
+		} catch (Exception e) {
+			model = WonRdfUtils.MessageUtils.textMessage(e.getMessage());
+		}
+		
+		bus.publish(new ConnectionMessageCommandEvent(con, model));
 	}
 
 }
