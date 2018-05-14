@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
@@ -22,11 +23,13 @@ import won.bot.framework.eventbot.event.impl.command.connectionmessage.Connectio
 import won.bot.framework.eventbot.event.impl.paypalbot.PayPalEchoCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.bot.framework.eventbot.util.EventCrawler;
-import won.bot.framework.eventbot.util.PaymentUtil;
+import won.bot.framework.eventbot.util.WonPaymentRdfUtils;
 import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.message.WonMessage;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
+import won.protocol.vocabulary.WON;
+import won.protocol.vocabulary.WONAGR;
 
 public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
 
@@ -72,13 +75,13 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
         }
         else if (cmd.equals("payment receiver")) {
         	// TODO: Implement
-        	String msg = "pay_rec: test@won.org";
+        	String msg = WonPaymentRdfUtils.PAY_RECEIVER + ": test@won.org";
         	bus.publish(new PayPalEchoCommandEvent(con, msg));
         	propose(ctx, bus, con, true, false, 1);
         }
         else if (cmd.equals("payment types")) {
-        	bus.publish(new PayPalEchoCommandEvent(con, "pay_type: PaypalPayment"));
-        	bus.publish(new PayPalEchoCommandEvent(con, "pay_type: Cash"));
+        	bus.publish(new PayPalEchoCommandEvent(con, WonPaymentRdfUtils.PAY_TYPE + ": PaypalPayment"));
+        	bus.publish(new PayPalEchoCommandEvent(con, WonPaymentRdfUtils.PAY_TYPE + ": Cash"));
         }
         else if (cmd.equals("payment validate")) {
         	// TODO: Implement
@@ -145,14 +148,27 @@ public class PaypalIncomingMsgToEventMapper extends BaseEventBotAction {
 	private void validate(EventListenerContext ctx, EventBus bus, Connection con) {
 		
 		Model model = null;
+		boolean valid = false;
 		
 		try {
-			model = PaymentUtil.generateModelByAgreements(con, ctx);
+			Map<String, String> paymentDetails = EventCrawler.crawlPaymentDetails(con, ctx);
+			model = WonPaymentRdfUtils.generatePaymentModel(paymentDetails);
+			// TODO: Validate model
+			valid = true;
 		} catch (Exception e) {
 			model = WonRdfUtils.MessageUtils.textMessage(e.getMessage());
 		}
 		
 		bus.publish(new ConnectionMessageCommandEvent(con, model));
+		
+		if (valid) {
+			Resource baseRes = model.listResourcesWithProperty(WON.HAS_TEXT_MESSAGE).next();
+			Model propModel = WonPaymentRdfUtils.createModelWithBaseResource();
+			Resource propRes = WonPaymentRdfUtils.createResource(propModel);
+			propRes.addProperty(WONAGR.PROPOSES, baseRes);
+			propRes.addProperty(WON.HAS_TEXT_MESSAGE, "Proposing the Payment");
+			bus.publish(new ConnectionMessageCommandEvent(con, propModel));
+		}
 	}
 
 }

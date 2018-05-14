@@ -3,9 +3,16 @@ package won.bot.framework.eventbot.util;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.springframework.util.StopWatch;
 
 import won.bot.framework.eventbot.EventListenerContext;
@@ -17,6 +24,7 @@ import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.model.Connection;
 import won.protocol.util.WonConversationUtils;
 import won.protocol.util.WonRdfUtils;
+import won.protocol.vocabulary.WON;
 
 public class EventCrawler {
 
@@ -73,6 +81,41 @@ public class EventCrawler {
 		Duration queryDuration = Duration.ofMillis(queryStopWatch.getLastTaskTimeMillis());
         Model messageModel = WonRdfUtils.MessageUtils.textMessage(textMessageMaker.makeTextMessage(queryDuration, state, targetUriArray));
         return messageReferrer.referToMessages(messageModel, targetUriArray);
+	}
+    
+    /**
+	 * Crawls the events in the connection and searchs for payment details.
+	 * 
+	 * @param con
+	 *            Connection to crawl through
+	 * @param ctx
+	 *            Context to get the data source
+	 * @return Key Value Map with payment Details
+	 */
+	public static Map<String, String> crawlPaymentDetails(Connection con, EventListenerContext ctx) {
+		AgreementProtocolState state = WonConversationUtils.getAgreementProtocolState(con.getConnectionURI(),
+				ctx.getLinkedDataSource());
+		Dataset dataset = state.getAgreements();
+		Model agreements = dataset.getUnionModel();
+		Map<String, String> payDetails = new LinkedHashMap<>();
+		StmtIterator iterator = agreements.listStatements();
+		while (iterator.hasNext()) {
+			Statement stmt = iterator.next();
+			Property prop = stmt.getPredicate();
+			if (prop.equals(WON.HAS_TEXT_MESSAGE)) {
+				RDFNode obj = stmt.getObject();
+				String text = obj.asLiteral().getString();
+				if (text.startsWith("pay_")) {
+					int posEnd = text.indexOf(":", 4);
+					if (posEnd > 0) {
+						String key = text.substring(0, posEnd).toLowerCase();
+						String val = text.substring(posEnd + 1).trim();
+						payDetails.put(key, val);
+					}
+				}
+			}
+		}
+		return payDetails;
 	}
 
 }
