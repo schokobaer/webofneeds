@@ -33,6 +33,16 @@ public class PaypalPaymentService {
 		void fail(List<ErrorData> errors) throws Exception;
 	}
 
+	/**
+	 * Creates a new Paypal Payment. Returns the pay key.
+	 * @param receiver
+	 * @param amount
+	 * @param currencyCode
+	 * @param feePayer
+	 * @param trackingId
+	 * @return
+	 * @throws Exception
+	 */
 	public String create(String receiver, Double amount, String currencyCode, String feePayer, String trackingId) throws Exception {
 
 		List<Receiver> receivers = new LinkedList<>();
@@ -75,6 +85,14 @@ public class PaypalPaymentService {
 		return create(receiver, amount, currencyCode, feePayer, null);
 	}
 
+	/**
+	 * Creates a new Paypal Payment with Sender as fee payer. Returns pay key.
+	 * @param receiver
+	 * @param amount
+	 * @param currencyCode
+	 * @return
+	 * @throws Exception
+	 */
 	public String create(String receiver, Double amount, String currencyCode) throws Exception {
 		return create(receiver, amount, currencyCode, "SENDER", null);
 	}
@@ -101,7 +119,7 @@ public class PaypalPaymentService {
 		// TODO: Implement
 	}
 
-	public boolean validate(String payKey) throws Exception {
+	public PaypalPaymentStatus validate(String payKey) throws Exception {
 		PaypalPaymentStatus status = PaypalPaymentStatus.ERROR;
 		final StringBuilder strBuilder = new StringBuilder();
 		
@@ -116,7 +134,7 @@ public class PaypalPaymentService {
 		});
 		
 		status = PaypalPaymentStatus.fromValue(strBuilder.toString()); 
-		return status == PaypalPaymentStatus.COMPLETED;
+		return status;
 	}
 
 	private void executeRequest(Object req, RequestSuccess success, RequestFailure failure) throws Exception {

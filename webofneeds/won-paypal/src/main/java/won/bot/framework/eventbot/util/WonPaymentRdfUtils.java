@@ -41,16 +41,19 @@ public class WonPaymentRdfUtils {
 		Model model = createModelWithBaseResource();
 		Resource msgResource = createResource(model);
 
-		String message = "Type: ";
+		String message = "";
 
 		// Payment Type
 		if (paymentDetails.containsKey(PAY_TYPE)) {
 			String type = paymentDetails.get(PAY_TYPE).toLowerCase();
-			message += paymentDetails.get(PAY_TYPE) + "\n";
+			message += "Type: " + paymentDetails.get(PAY_TYPE) + "\n";
 			if ("paypalpayment".equals(type)) {
 				msgResource.addProperty(RDF.type, WONPAY.PAYPAL_PAYMENT);
 			} else if ("cash".equals(type)) {
 				msgResource.addProperty(RDF.type, WONPAY.CASH_PAYMENT);
+			}
+			else {
+				// TODO: Unknonwn
 			}
 		}
 
@@ -98,10 +101,21 @@ public class WonPaymentRdfUtils {
 				msgResource.addProperty(WONPAY.HAS_FEE_PAYER, WONPAY.FEE_PAYER_RECEIVER);
 			}
 		}
-
+		
 		// Message
 		msgResource.addProperty(WON.HAS_TEXT_MESSAGE, message, "en");
 
+		return model;
+	}
+	
+	public static Model generatePaypalKeyMessage(Resource reference, String payKey, String msg) {
+		Model model = createModelWithBaseResource();
+		Resource baseRes = createResource(model);
+		
+		baseRes.addProperty(WONPAY.REFERS_TO, reference);
+		baseRes.addProperty(WONPAY.HAS_PAYPAL_TX_KEY, payKey);
+		baseRes.addProperty(WON.HAS_TEXT_MESSAGE, msg);
+		
 		return model;
 	}
 

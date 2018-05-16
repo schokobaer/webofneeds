@@ -21,6 +21,7 @@ public class WONPAY {
 	public static Property HAS_INVOICE_NUMBER = m.createProperty(BASE_URI + "hasInvoiceNumber");
 	public static Property HAS_INVOICE_DETAILS = m.createProperty(BASE_URI + "hasInvoiceDetails");
 	public static Property HAS_PAYMENT_STATE = m.createProperty(BASE_URI + "hasState");
+	public static Property REFERS_TO = m.createProperty(BASE_URI + "refersTo");
 	
 	public static Property HAS_PAYPAL_TX_KEY = m.createProperty(BASE_URI + "hasPaypalTxKey");
 	
